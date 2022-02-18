@@ -46,7 +46,7 @@ EOF
 
 echo '- Formatting the root partition.'
 root_dev=${loop_dev}p2
-mkfs.ext4 -q -L root -- "$root_dev"
+mkfs.btrfs -q -L root -- "$root_dev"
 
 echo '- Mounting the root partition.'
 mount_dir=$work_dir/disk.mnt
@@ -75,7 +75,7 @@ root_uuid=$(lsblk --noheadings --raw --output UUID -- "$root_dev")
 {
 	printf '# LABEL=%s\n' root
 	printf 'UUID=%-20s' "$root_uuid"
-	printf '\t%-10s' / ext4 defaults
+	printf '\t%-10s' / btrfs defaults,noatime,compress=zstd,commit=120
 	printf '\t%s %s' 0 1
 	printf '\n\n'
 } >> "$mount_dir/etc/fstab"
